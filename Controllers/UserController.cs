@@ -1,0 +1,68 @@
+using AztroWebApplication.Models;
+using AztroWebApplication.Data;
+using AztroWebApplication.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace AztroWebApplication.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+
+
+public class UserController : ControllerBase
+{
+    private readonly UserService userService;
+
+    public UserController(ApplicationDbContext context)
+    {
+        userService = new UserService(context);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        if (userService == null)
+        {
+            return StatusCode(500, "User service is not available");
+        }
+        var users = await userService.GetAllUsers();
+        return Ok(users);
+    }
+
+    //New endpoint to get a user by id
+    [HttpGet("{id}")]
+    public IActionResult GetUserById(int id)
+    {
+        var user = userService.GetUserById(id);
+        if (user == null)
+        {
+            return NotFound(new ErrorResponse { Message = "User not found", StatusCode = 404 });
+        }
+
+        // Return the user object as a JSON response
+        return Ok(user);
+    }
+
+    [HttpPost]
+    public IActionResult CreateUser()
+    {
+        // Save the user to the database
+        // For demonstration purposes, we are returning the saved user
+        return Ok("User created successfully");
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult UpdateUserById(int id)
+    {
+        // Update the user in the database
+        // For demonstration purposes, we are returning the updated user
+        return Ok("User updated successfully by id: " + id);
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteUserById(int id)
+    {
+        // Delete the user from the database
+        return Ok("User deleted successfully by id: " + id);
+    }
+}
