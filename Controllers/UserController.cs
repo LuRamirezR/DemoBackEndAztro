@@ -21,25 +21,19 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
     {
-        if (userService == null)
-        {
-            return StatusCode(500, "User service is not available");
-        }
         var users = await userService.GetAllUsers();
         return Ok(users);
     }
 
-    //New endpoint to get a user by id
     [HttpGet("{id}")]
-    public IActionResult GetUserById(int id)
+    public async Task<IActionResult> GetUserById(int id)
     {
-        var user = userService.GetUserById(id);
+        var user = await userService.GetUserById(id);
         if (user == null)
         {
             return NotFound(new ErrorResponse { Message = "User not found", StatusCode = 404 });
         }
 
-        // Return the user object as a JSON response
         return Ok(user);
     }
 

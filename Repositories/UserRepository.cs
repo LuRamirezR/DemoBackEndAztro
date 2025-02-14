@@ -18,24 +18,24 @@ namespace AztroWebApplication.Repositories
 
         public async Task<List<User>> GetAllUsers()
         {
-            return await dbContext.Users.ToListAsync();
+            return await dbContext.User.ToListAsync();
         }
 
         public async Task<User?> GetUserById(int id)
         {
-            return await dbContext.Users.FirstOrDefaultAsync(u => u.Id == id)!;
+            return await dbContext.User.FirstOrDefaultAsync(user => user.Id == id);
         }
 
         public async Task<User> CreateUser(User user)
         {
-            dbContext.Users.Add(user);
+            dbContext.User.Add(user);
             await dbContext.SaveChangesAsync();
             return user;
         }
 
         public async Task<User?> UpdateUserById(int id, User user)
         {
-            var userToUpdate = dbContext.Users.FirstOrDefault(u => u.Id == id);
+            var userToUpdate = dbContext.User.FirstOrDefault(u => u.Id == id);
             if (userToUpdate == null)
             {
                 return null;
@@ -51,13 +51,13 @@ namespace AztroWebApplication.Repositories
 
         public async Task<User?> DeleteUserById(int id)
         {
-            var userToDelete = dbContext.Users.FirstOrDefault(u => u.Id == id);
+            var userToDelete = dbContext.User.FirstOrDefault(u => u.Id == id);
             if (userToDelete == null)
             {
                 return null;
             }
 
-            dbContext.Users.Remove(userToDelete);
+            dbContext.User.Remove(userToDelete);
             await dbContext.SaveChangesAsync();
             return userToDelete;
         }
