@@ -38,11 +38,10 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateUser()
+    public async Task<IActionResult> CreateUser(User user)
     {
-        // Save the user to the database
-        // For demonstration purposes, we are returning the saved user
-        return Ok("User created successfully");
+        var createdUser = await userService.CreateUser(user);
+        return Created(nameof(GetUserById), createdUser);
     }
 
     [HttpPut("{id}")]

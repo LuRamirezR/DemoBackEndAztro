@@ -28,9 +28,9 @@ namespace AztroWebApplication.Repositories
 
         public async Task<User> CreateUser(User user)
         {
-            dbContext.User.Add(user);
+            var newUser = dbContext.User.Add(user);
             await dbContext.SaveChangesAsync();
-            return user;
+            return newUser.Entity;
         }
 
         public async Task<User?> UpdateUserById(int id, User user)

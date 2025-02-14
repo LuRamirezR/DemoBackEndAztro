@@ -25,9 +25,9 @@ namespace AztroWebApplication.Services
             return await userRepository.GetUserById(id);
         }
 
-        public User CreateUser()
+        public async Task<User> CreateUser(User user)
         {
-            return new User();
+            return await userRepository.CreateUser(user);
         }
 
         public User UpdateUserById(int id)
