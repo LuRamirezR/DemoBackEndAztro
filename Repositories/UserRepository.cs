@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace AztroWebApplication.Repositories
 {
@@ -35,27 +36,39 @@ namespace AztroWebApplication.Repositories
 
         public async Task<User?> UpdateUserById(int id, User user)
         {
-            var userToUpdate = dbContext.User.FirstOrDefault(u => u.Id == id);
-            if (userToUpdate == null)
-            {
-                return null;
-            }
+            var userToUpdate = await this.GetUserById(id);
+            if (userToUpdate == null) return null;
 
-            userToUpdate.Name = user.Name;
-            userToUpdate.Email = user.Email;
-            userToUpdate.Age = user.Age;
+            user.Id = userToUpdate.Id;
+            var userUpdated = UpdateObject(userToUpdate, user);
 
+            dbContext.User.Update(userUpdated);
             await dbContext.SaveChangesAsync();
             return userToUpdate;
         }
 
+        private static T UpdateObject<T>(T current, T newObject)
+        {
+            foreach (PropertyInfo prop in typeof(T).GetProperties())
+            {
+                var newValue = prop.GetValue(newObject);
+
+                // Si es un string y está vacío, se ignora
+                if (newValue == null || string.IsNullOrEmpty(newValue.ToString()))
+                    continue;
+
+                // Si es un int y su valor es 0 en newObject, se ignora
+                if (newValue is int intValue && intValue == 0)
+                    continue;
+                prop.SetValue(current, newValue);
+            }
+            return current;
+        }
+
         public async Task<User?> DeleteUserById(int id)
         {
-            var userToDelete = dbContext.User.FirstOrDefault(u => u.Id == id);
-            if (userToDelete == null)
-            {
-                return null;
-            }
+            var userToDelete = await this.GetUserById(id);
+            if (userToDelete == null) return null;
 
             dbContext.User.Remove(userToDelete);
             await dbContext.SaveChangesAsync();

@@ -45,17 +45,20 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateUserById(int id)
+    public async Task<IActionResult> UpdateUserById(int id, User user)
     {
-        // Update the user in the database
-        // For demonstration purposes, we are returning the updated user
-        return Ok("User updated successfully by id: " + id);
+        await userService.UpdateUserById(id, user);
+        return Ok(user);
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeleteUserById(int id)
+    public async Task<IActionResult> DeleteUserById(int id)
     {
-        // Delete the user from the database
-        return Ok("User deleted successfully by id: " + id);
+        var userRemoved = await userService.DeleteUserById(id);
+        if (userRemoved == null)
+        {
+            return NotFound(new ErrorResponse { Message = "User not found", StatusCode = 404 });
+        }
+        return Ok(new { Message = "User deleted", User = userRemoved });
     }
 }

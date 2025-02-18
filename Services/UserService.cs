@@ -30,14 +30,14 @@ namespace AztroWebApplication.Services
             return await userRepository.CreateUser(user);
         }
 
-        public User UpdateUserById(int id)
+        public async Task<User?> UpdateUserById(int id, User user)
         {
-            return new User();
+            return await userRepository.UpdateUserById(id, user);
         }
 
-        public User DeleteUserById(int id)
+        public async Task<User?> DeleteUserById(int id)
         {
-            return new User();
+            return await userRepository.DeleteUserById(id);
         }
     }
 }
