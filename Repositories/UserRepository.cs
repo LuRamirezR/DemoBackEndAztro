@@ -17,16 +17,19 @@ namespace AztroWebApplication.Repositories
             dbContext = context;
         }
 
+        // Metodo para obtener todos los usuarios
         public async Task<List<User>> GetAllUsers()
         {
             return await dbContext.User.ToListAsync();
         }
 
+        // Metodo para obtener un usuario por su id
         public async Task<User?> GetUserById(int id)
         {
             return await dbContext.User.FirstOrDefaultAsync(user => user.Id == id);
         }
 
+        // Metodo para crear un usuario
         public async Task<User> CreateUser(User user)
         {
             var newUser = dbContext.User.Add(user);
@@ -34,6 +37,7 @@ namespace AztroWebApplication.Repositories
             return newUser.Entity;
         }
 
+        // Metodo para actualizar un usuario por su id
         public async Task<User?> UpdateUserById(int id, User user)
         {
             var userToUpdate = await this.GetUserById(id);
@@ -46,7 +50,7 @@ namespace AztroWebApplication.Repositories
             await dbContext.SaveChangesAsync();
             return userToUpdate;
         }
-
+        // Función para actualizar un objeto y usarlo en el método UpdateUserById
         private static T UpdateObject<T>(T current, T newObject)
         {
             foreach (PropertyInfo prop in typeof(T).GetProperties())
@@ -65,6 +69,7 @@ namespace AztroWebApplication.Repositories
             return current;
         }
 
+        // Metodo para eliminar un usuario por su id
         public async Task<User?> DeleteUserById(int id)
         {
             var userToDelete = await this.GetUserById(id);

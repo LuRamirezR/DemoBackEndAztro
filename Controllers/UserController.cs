@@ -18,6 +18,7 @@ public class UserController : ControllerBase
         userService = new UserService(context);
     }
 
+    // Metodo para obtener todos los usuarios
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
     {
@@ -25,6 +26,7 @@ public class UserController : ControllerBase
         return Ok(users);
     }
 
+    // Metodo para obtener un usuario por su id
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(int id)
     {
@@ -37,13 +39,19 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
+    // Metodo para crear un usuario
     [HttpPost]
     public async Task<IActionResult> CreateUser(User user)
     {
         var createdUser = await userService.CreateUser(user);
+        if (createdUser == null)
+        {
+            return BadRequest(new ErrorResponse { Message = "User must be between 18 and 80 years old", StatusCode = 400 });
+        }
         return Created(nameof(GetUserById), createdUser);
     }
 
+    // Metodo para actualizar un usuario por su id
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUserById(int id, User user)
     {
@@ -51,6 +59,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
+    // Metodo para eliminar un usuario por su id
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUserById(int id)
     {
